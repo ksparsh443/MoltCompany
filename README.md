@@ -1,4 +1,4 @@
-# 🏢 AI COMPANY - LOCAL FREE VERSION
+# 🏢 AI COMPANY Agent
 
 **Complete multi-agent AI company running locally with Hugging Face (100% FREE!)**
 
