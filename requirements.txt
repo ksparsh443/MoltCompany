@@ -1,19 +1,15 @@
-# Core AI/ML Frameworks
-crewai==0.70.1
-crewai-tools==0.12.1
+# Google Agent Development Kit
+google-adk>=0.5.0
+litellm>=1.50.0
 
-# LangChain - CRITICAL: These versions must match
-langchain==0.3.7
-langchain-community==0.3.7
-langchain-core==0.3.15
-langchain-huggingface==0.1.0
+# Async database support (for ADK sessions)
+aiosqlite>=0.20.0
 
-# Hugging Face
+# Hugging Face (for HuggingFace model provider)
 huggingface-hub==0.26.2
 
 # Database & Storage
 chromadb==0.5.20
-# sqlite3 is built-in to Python, no need to install
 
 # API & Web
 fastapi==0.115.5
@@ -32,7 +28,7 @@ plotly==5.24.1
 
 # Utilities
 rich==13.9.4
-pydantic<2.0
+pydantic>=2.0
 python-multipart==0.0.19
 
 # Optional integrations
