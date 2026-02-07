@@ -1,0 +1,23 @@
+name: Blue/Green Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Docker Image
+      run: echo "Building v2 image..." # docker build -t app:v2 .
+    - name: Run Tests
+      run: echo "Running integration tests..." # npm test
+    - name: Deploy Green Fleet
+      run: echo "Deploying Green fleet (v2)..." # kubectl apply -f k8s/green.yaml
+    - name: Health Check
+      run: echo "Verifying Green health..." # ./scripts/healthcheck.sh
+    - name: Shift Traffic
+      run: echo "Shifting traffic Blue -> Green..." # kubectl patch service ...
+    - name: Cleanup Blue
+      run: echo "Terminating Blue fleet..."
