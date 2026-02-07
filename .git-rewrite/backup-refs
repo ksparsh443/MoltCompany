@@ -1,0 +1,7 @@
+e59fa2fd920e28b7e1e6c19daca6294b442ec544 commit	refs/heads/main
+4185214552bbd55e3d9b50e9c32f540dc2a49989 commit	refs/original/refs/heads/main
+c1059639dc575fbe6d3732fa99b254d2db12bbd4 commit	refs/original/refs/remotes/origin/main
+d95b5daf41f315131da05af1d0ba9e7595c96610 commit	refs/original/refs/stash
+c1059639dc575fbe6d3732fa99b254d2db12bbd4 commit	refs/remotes/origin/HEAD
+c1059639dc575fbe6d3732fa99b254d2db12bbd4 commit	refs/remotes/origin/main
+e59fa2fd920e28b7e1e6c19daca6294b442ec544 commit	refs/stash
