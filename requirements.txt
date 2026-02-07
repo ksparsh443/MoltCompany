@@ -10,12 +10,21 @@ huggingface-hub==0.26.2
 
 # Database & Storage
 chromadb==0.5.20
+supabase>=2.0.0
+psycopg2-binary>=2.9.0
 
 # API & Web
-fastapi==0.115.5
-uvicorn==0.32.1
-requests==2.32.3
+fastapi==0.124.1
+uvicorn==0.34.0
 python-dotenv==1.0.1
+websockets>=12.0
+
+# Free Search (no API key needed)
+ddgs>=9.0.0
+
+# Security Scanning (FREE)
+bandit>=1.7.0
+safety>=2.3.0
 
 # Data Processing
 pandas==2.2.3
@@ -31,16 +40,25 @@ rich==13.9.4
 pydantic>=2.0
 python-multipart==0.0.19
 
-# Optional integrations
-# Uncomment if you need them:
-# psycopg2-binary==2.9.10  # For PostgreSQL
-# pymysql==1.1.1           # For MySQL
-# jira==3.8.0              # For Jira integration
+# HR Tools - Resume Parsing
+pdfplumber>=0.10.0
+python-docx>=1.0.0
 
-# Testing
-pytest==8.3.4
-pytest-asyncio==0.24.0
+# PMO Tools - Excel & Calendar
+openpyxl>=3.1.0
+google-api-python-client>=2.100.0
+google-auth-oauthlib>=1.1.0
+google-auth>=2.0.0
 
-# Development
-black==24.10.0
-flake8==7.1.1
+# Data Analyst - RAG & Visualization
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+kaleido>=0.2.1
+gdown>=5.1.0
+xlrd>=2.0.1
+python-pptx>=0.6.21
+
+# Marketing Tools - Social Media & Video
+tweepy>=4.14.0
+moviepy>=1.0.3
+Pillow>=10.0.0

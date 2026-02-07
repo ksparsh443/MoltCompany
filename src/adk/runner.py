@@ -14,13 +14,32 @@ from typing import Optional, Dict, Any, AsyncGenerator, List
 from datetime import datetime
 
 from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService, Session
+from google.adk.sessions import InMemorySessionService, DatabaseSessionService, Session
 from google.genai.types import Content, Part
 
 from src.adk.agents import create_root_agent, get_agent_info
 from src.adk.memory import get_memory_service, HybridMemoryService
+from src.adk.models import get_token_callback
 
 logger = logging.getLogger(__name__)
+
+
+# ============================================================================
+# SESSION SERVICE WRAPPER
+# ============================================================================
+
+class SessionServiceWrapper(InMemorySessionService):
+    """
+    Wrapper for InMemorySessionService to make get_session accept positional arguments.
+    """
+
+    def get_session(self, app_name, user_id, session_id, config=None):
+        return super().get_session(
+            app_name=app_name,
+            user_id=user_id,
+            session_id=session_id,
+            config=config
+        )
 
 
 # ============================================================================
@@ -31,19 +50,10 @@ def create_session_service():
     """
     Create appropriate session service based on configuration.
 
-    Returns InMemorySessionService for now (DatabaseSessionService requires
-    additional async setup that can be added later).
+    Uses wrapped InMemorySessionService for compatibility.
     """
-    db_url = os.getenv("SESSION_DB_URL")
-
-    if db_url and db_url.startswith("sqlite+aiosqlite"):
-        # For now, use InMemorySessionService as DatabaseSessionService
-        # requires more complex async initialization
-        logger.info("Using InMemorySessionService (upgrade to DatabaseSessionService for persistence)")
-        return InMemorySessionService()
-    else:
-        logger.info("Using InMemorySessionService")
-        return InMemorySessionService()
+    logger.info("Using wrapped InMemorySessionService")
+    return SessionServiceWrapper()
 
 
 # ============================================================================
@@ -89,6 +99,7 @@ class AICompanyRunner:
             agent=self.root_agent,
             app_name=self.APP_NAME,
             session_service=self.session_service,
+            auto_create_session=True,
         )
 
         logger.info("AICompanyRunner initialized successfully")
@@ -116,6 +127,12 @@ class AICompanyRunner:
 
         logger.info(f"Processing request for session {session_id}: {query[:50]}...")
 
+        # Set token tracking context
+        token_cb = get_token_callback()
+        token_cb.set_context(agent_name="HR_Manager", session_id=session_id, user_id=user_id)
+
+        start_time = datetime.utcnow()
+
         try:
             # Create user message content
             user_content = Content(
@@ -139,12 +156,40 @@ class AICompanyRunner:
                             if hasattr(part, 'text') and part.text:
                                 response_parts.append(part.text)
 
-                # Track agents involved
+                # Track agents involved and update token context
                 if hasattr(event, 'author') and event.author:
                     agents_involved.add(event.author)
+                    token_cb.set_context(agent_name=event.author, session_id=session_id, user_id=user_id)
 
             # Combine response
             response_text = "\n".join(response_parts) if response_parts else "Request processed."
+
+            # Calculate latency
+            latency_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
+
+            # Log token usage for agents that don't go through LiteLLM (e.g., Gemini native)
+            # LiteLLM models are tracked automatically via callbacks
+            model_provider = os.getenv("MODEL_PROVIDER", "gemini")
+            if model_provider == "gemini":
+                # Estimate tokens for Gemini (native, not via LiteLLM callbacks)
+                estimated_in = len(query.split()) * 2  # rough token estimate
+                estimated_out = len(response_text.split()) * 2
+                try:
+                    from src.adk.tools import log_token_usage
+                    log_token_usage(
+                        agent_name=", ".join(agents_involved) if agents_involved else "HR_Manager",
+                        model_name=os.getenv("GEMINI_MODEL_NAME", "gemini-2.0-flash"),
+                        model_provider="gemini",
+                        tokens_in=estimated_in,
+                        tokens_out=estimated_out,
+                        query_preview=query[:500],
+                        response_preview=response_text[:500],
+                        session_id=session_id,
+                        user_id=user_id,
+                        latency_ms=latency_ms
+                    )
+                except Exception as te:
+                    logger.warning(f"Token logging failed: {te}")
 
             # Save to memory
             await self._save_to_memory(session_id, query, response_text)
@@ -155,6 +200,7 @@ class AICompanyRunner:
                 "session_id": session_id,
                 "user_id": user_id,
                 "agents_involved": list(agents_involved),
+                "latency_ms": latency_ms,
                 "timestamp": datetime.utcnow().isoformat()
             }
 

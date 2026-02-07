@@ -30,7 +30,7 @@ def check_environment():
     """Check if environment is properly configured"""
     console.print("\n[bold cyan]🔍 Checking Environment...[/bold cyan]")
 
-    model_provider = os.getenv("MODEL_PROVIDER", "gemini")
+    model_provider = os.getenv("MODEL_PROVIDER", "openai")
     console.print(f"[dim]Model Provider: {model_provider}[/dim]")
 
     if model_provider == "gemini":
@@ -122,34 +122,60 @@ async def run_test_scenario(scenario_name: str, query: str, runner):
 
 
 def check_pending_code():
-    """Check for code files pending approval"""
+    """Check for code files and agent packages pending approval"""
     pending_dir = os.getenv("AGENT_CODE_PENDING", "./agent_workspace/pending_approval")
 
     if not os.path.exists(pending_dir):
         return []
 
     files = []
-    for filename in os.listdir(pending_dir):
-        if filename.endswith('.meta.json'):
-            continue
+    for item in os.listdir(pending_dir):
+        item_path = os.path.join(pending_dir, item)
 
-        filepath = os.path.join(pending_dir, filename)
-        meta_path = filepath + ".meta.json"
+        if os.path.isdir(item_path):
+            # Handle agent packages (directories)
+            meta_path = os.path.join(item_path, "package.meta.json")
+            if os.path.exists(meta_path):
+                with open(meta_path, 'r') as f:
+                    metadata = json.load(f)
 
-        metadata = {}
-        if os.path.exists(meta_path):
-            with open(meta_path, 'r') as f:
-                metadata = json.load(f)
+                # Get main Python file
+                python_file = metadata.get("files", [])[0] if metadata.get("files") else None
+                code = ""
+                if python_file:
+                    python_path = os.path.join(item_path, python_file)
+                    if os.path.exists(python_path):
+                        with open(python_path, 'r') as f:
+                            code = f.read()
 
-        with open(filepath, 'r') as f:
-            code = f.read()
+                files.append({
+                    "filename": item,
+                    "filepath": item_path,
+                    "description": metadata.get("description", "No description"),
+                    "code": code,
+                    "is_package": True,
+                    "files": metadata.get("files", [])
+                })
+        elif not item.endswith('.meta.json'):
+            # Handle single files (legacy)
+            filepath = item_path
+            meta_path = filepath + ".meta.json"
 
-        files.append({
-            "filename": filename,
-            "filepath": filepath,
-            "description": metadata.get("description", "No description"),
-            "code": code
-        })
+            metadata = {}
+            if os.path.exists(meta_path):
+                with open(meta_path, 'r') as f:
+                    metadata = json.load(f)
+
+            with open(filepath, 'r') as f:
+                code = f.read()
+
+            files.append({
+                "filename": item,
+                "filepath": filepath,
+                "description": metadata.get("description", "No description"),
+                "code": code,
+                "is_package": False
+            })
 
     return files
 
@@ -184,6 +210,15 @@ def approve_code_interactive():
             os.makedirs(approved_dir, exist_ok=True)
 
             approved_path = os.path.join(approved_dir, file_info['filename'])
+
+            # Handle existing file by adding timestamp
+            if os.path.exists(approved_path):
+                from datetime import datetime
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                base, ext = os.path.splitext(file_info['filename'])
+                new_filename = f"{base}_{timestamp}{ext}"
+                approved_path = os.path.join(approved_dir, new_filename)
+                console.print(f"[yellow]⚠️ File exists, saving as: {new_filename}[/yellow]")
 
             os.rename(file_info['filepath'], approved_path)
 
