@@ -8,14 +8,14 @@ No Azure, no OpenAI API costs - just your Hugging Face account (free tier works 
 
 ## 🎯 What You Get
 
-**6 Specialist AI Agents:**
+**7 Specialist AI Agents:**
 - 👔 **HR Manager** - Routes queries, schedules interviews, manages recruitment
 - 🛠️ **AI Engineer** - Builds AI agents, generates code, creates automation
 - 📊 **Data Analyst** - ETL pipelines, SQL queries, visualizations
 - 📋 **PMO/Scrum Master** - Project tracking, standups, status reports
 - 🔒 **Security Pentester** - Vulnerability scanning, security audits
 - 🚀 **DevOps Engineer** - CI/CD pipelines, infrastructure deployment
-
+- Marketing and Sales Engineer- Analyse the pattern and also generates post for linkedin
 **Two Ways to Use:**
 1. **FastAPI Server** - RESTful API endpoints (production-ready)
 2. **Local Testing** - Interactive command-line interface (testing & development)
