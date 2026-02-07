@@ -570,3 +570,37 @@ Try queries like:
 
 Have fun with your AI company! 🚀
 # MoltCompany
+
+
+<img width="1419" height="801" alt="image" src="https://github.com/user-attachments/assets/76749ebc-4f19-4770-bedb-818f88e67641" />
+
+<img width="1917" height="970" alt="image" src="https://github.com/user-attachments/assets/a1b97fe7-14d4-4537-b93f-6f93b0d40ca1" />
+
+<img width="1917" height="982" alt="image" src="https://github.com/user-attachments/assets/c28914db-77d7-4563-9255-4d6112198426" />
+
+<img width="1919" height="952" alt="image" src="https://github.com/user-attachments/assets/fcd517b8-cab2-4431-9be0-e99653855004" />
+
+<img width="1571" height="939" alt="image" src="https://github.com/user-attachments/assets/511bf9cc-d5c7-4297-afb2-d2e49e7c0fd6" />
+\
+<img width="1488" height="950" alt="image" src="https://github.com/user-attachments/assets/cb8955fe-d31f-408b-afa4-d6c5109e8d72" />
+
+<img width="1498" height="860" alt="image" src="https://github.com/user-attachments/assets/16da2f17-138a-4afc-89c5-6a7df69416fe" />
+
+
+# GENERATED IMAGES FOR THE LINKEDIN POST AND THE TEXT
+
+<img width="864" height="592" alt="image" src="https://github.com/user-attachments/assets/cb93c894-ff48-41c4-a239-a1f953991887" />
+
+<img width="882" height="886" alt="image" src="https://github.com/user-attachments/assets/a47f74df-48eb-4b3b-aa74-064357292377" />
+
+<img width="1116" height="803" alt="image" src="https://github.com/user-attachments/assets/c4e9fdda-54de-4118-8331-5c0b64a4b4a0" />
+
+
+
+
+
+
+
+
+
+
